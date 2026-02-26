@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <h1 class="mb-4">{{ title }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-3">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mb-2" role="alert">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header">افزودن عضو جدید</div>
+      <div class="card-body">
+        <form class="row gy-2 gx-2 align-items-center" method="post" action="{{ url_for('add_member') }}">
+          <div class="col-sm-6">
+            <label class="form-label">نام</label>
+            <input class="form-control" name="name" placeholder="مثلاً: علی">
+          </div>
+          <div class="col-sm-4">
+            <label class="form-label">هزینهٔ پرداختی (تومان)</label>
+            <input class="form-control" name="paid" inputmode="decimal" placeholder="مثلاً: 120000">
+          </div>
+          <div class="col-sm-2 d-grid">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary">افزودن</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>لیست اعضا</span>
+        <div>
+          <a class="btn btn-outline-success btn-sm" href="{{ url_for('shares') }}">محاسبهٔ سهم‌ها</a>
+          <form class="d-inline" method="post" action="{{ url_for('reset_members') }}" onsubmit="return confirm('کل لیست پاک شود؟');">
+            <button class="btn btn-outline-danger btn-sm">ریست کردن اعضا</button>
+          </form>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>نام</th>
+                <th>هزینهٔ پرداختی (تومان)</th>
+                <th class="text-center">عملیات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if members %}
+                {% for m in members %}
+                  <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ m.name }}</td>
+                    <td>
+                      <form class="d-flex gap-2" method="post" action="{{ url_for('edit_member', idx=loop.index0) }}">
+                        <input class="form-control form-control-sm" name="paid" value="{{ '%.2f'|format(m.paid) }}">
+                        <button class="btn btn-sm btn-outline-secondary">ویرایش</button>
+                      </form>
+                    </td>
+                    <td class="text-center">
+                      <form method="post" action="{{ url_for('delete_member', idx=loop.index0) }}" onsubmit="return confirm('حذف این عضو؟');">
+                        <button class="btn btn-sm btn-outline-danger">حذف</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="4" class="text-center text-muted py-4">فعلاً عضوی وجود ندارد.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-3 text-muted small">نکته: می‌توانید مقدار پرداختی را صفر بگذارید؛ این عضو همچنان در محاسبهٔ سهم‌ها لحاظ می‌شود.</p>
+  </div>
+</body>
+</html>
