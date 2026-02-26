@@ -18,19 +18,13 @@ A web application to track shared expenses and calculate exactly who owes whom.
 ## 💻 How to Run
 
 
-1. **Install Flask:**
+1. **Setup & Run:**
 ```bash
    pip install flask
-   
-pip install flask
-2. Run the App:
    python sharepayment.py
+   
 
-3. Open in Browser:
-   http://127.0.0.1:5000
-
-
-
+   
 
 
 
